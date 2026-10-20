@@ -85,3 +85,34 @@ export function playShutter() {
     /* áudio indisponível */
   }
 }
+
+/** Toca um tom curto (clique mecânico / abertura). Mesmas regras do obturador. */
+function tone(freqs: number[], dur: number, gain: number, type: OscillatorType = 'square') {
+  if (!enabled) return;
+  try {
+    const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!AC) return;
+    ctx ??= new AC();
+    if (ctx.state === 'suspended') void ctx.resume();
+    const c = ctx;
+    freqs.forEach((f, k) => {
+      const at = c.currentTime + 0.005 + k * 0.045;
+      const o = c.createOscillator();
+      const g = c.createGain();
+      o.type = type;
+      o.frequency.setValueAtTime(f, at);
+      g.gain.setValueAtTime(gain, at);
+      g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+      o.connect(g).connect(c.destination);
+      o.start(at);
+      o.stop(at + dur + 0.02);
+    });
+  } catch {
+    /* áudio indisponível */
+  }
+}
+
+/** Clique mecânico sutil (navegação nos carrosséis). */
+export const playClick = () => tone([1900], 0.018, 0.08);
+/** Som curto de interface (abrir projeto). */
+export const playOpen = () => tone([660, 990], 0.07, 0.06, 'sine');

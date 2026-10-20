@@ -34,7 +34,7 @@ export function Contact() {
   return (
     <section className="contact" id="contato" aria-labelledby="contato-title">
       <div className="contact-inner">
-        <p className="section-num">(05) — Contato</p>
+        <p className="section-num">(07) — Contato</p>
         <h2 id="contato-title" className="contact-title">
           <MaskLines lines={[text.title[0], <em key="a">{text.title[1]}</em>]} />
         </h2>

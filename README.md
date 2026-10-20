@@ -15,7 +15,7 @@ npm run preview   # serve o build
 | O quê | Arquivo |
 |---|---|
 | Nome, foto, contatos, som padrão, domínio | `src/config/site.ts` |
-| Todos os textos (hero, sobre, áreas, linha do tempo, contato) | `src/content.ts` |
+| Todos os textos (hero, sobre, linha do tempo, serviços, habilidades/ferramentas, contato) | `src/content.ts` |
 | Trabalhos de design gráfico e categorias | `src/data/works.ts` + imagens em `public/works/` |
 | Vídeos (Instagram, YouTube ou arquivo) | `src/data/videos.ts` + capas em `public/videos/` |
 | Título e descrição para Google/WhatsApp | `index.html` e `public/og-image.png` (1200×630) |
@@ -60,3 +60,21 @@ Depois de ter o endereço final, preencha `url` em `src/config/site.ts` e, no `i
 
 ## Origem do conteúdo
 Textos, trabalhos e links de vídeo vêm do portfólio 2026 do Lucas. As imagens dos vídeos são capas recortadas das páginas desse portfólio; os vídeos em si são carregados do Instagram.
+
+### Descrições, legendas e vídeos próprios
+- Trabalhos: campo opcional `description` em `src/data/works.ts` (aparece no cartão e no "Ver projeto").
+- Vídeos: campos opcionais `description` e `captions` (arquivo `.vtt` em `public/`) em `src/data/videos.ts`.
+- Vídeos `kind: 'file'` (MP4 em `public/videos/` ou link direto) iniciam sozinhos **sem som** quando a seção aparece; o botão "Ativar som" libera o áudio. Instagram/YouTube só tocam após o clique (limitação das plataformas).
+- Muitos vídeos pesados: hospede fora (YouTube, Cloudflare Stream, Bunny Stream) e use o link no lugar do arquivo.
+
+### Ferramentas
+Em `skills` (`src/content.ts`), preencha `tools` só com ferramentas confirmadas. Lista vazia mostra "A confirmar".
+
+## Checklist antes de publicar
+- [ ] Hero: "Explorar portfólio" rola até Design; "Entrar em contato" até Contato
+- [ ] Linha do tempo: marcadores acendem ao rolar; clique/↑↓/botões trocam a etapa com som
+- [ ] Design: carrossel avança, pausa no mouse/toque, setas e pontos funcionam, "Ver projeto" abre o modal
+- [ ] Vídeos: troca pausa o anterior; som liga/desliga; links abrem no Instagram
+- [ ] Botão "Som on/off" no topo silencia todos os efeitos
+- [ ] Celular: sem rolagem lateral, menu abre e fecha
+- [ ] Contatos preenchidos em `src/config/site.ts`

@@ -4,6 +4,7 @@ import { About } from './components/About';
 import { Works } from './components/Works';
 import { Videos } from './components/Videos';
 import { Timeline } from './components/Timeline';
+import { Services, Skills } from './components/Services';
 import { Contact, Footer } from './components/Contact';
 
 export default function App() {
@@ -15,9 +16,11 @@ export default function App() {
         <Hero />
         <Marquee />
         <About />
+        <Timeline />
         <Works />
         <Videos />
-        <Timeline />
+        <Services />
+        <Skills />
         <Contact />
       </main>
       <Footer />

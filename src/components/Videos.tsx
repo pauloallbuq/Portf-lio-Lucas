@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { videoCategories, videos, type Video } from '../data/videos';
 import { asset } from '../lib/asset';
-import { playShutter } from '../hooks/useSound';
+import { playClick, playShutter } from '../hooks/useSound';
 import { MaskLines, Reveal } from './Reveal';
 
 function embedUrl(v: Video) {
@@ -25,30 +25,55 @@ export function Videos() {
   const [i, setI] = useState(0);
   const [engaged, setEngaged] = useState(false); // o visitante já pediu para assistir
   const videoEl = useRef<HTMLVideoElement>(null);
+  const box = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  const [muted, setMuted] = useState(true); // autoplay só é permitido sem som
+  const [time, setTime] = useState(0);
+  const [err, setErr] = useState(false);
   const reduce = useReducedMotion();
   const v = videos[i];
   const n = videos.length;
 
   const go = (to: number) => {
     videoEl.current?.pause();
+    playClick();
+    setTime(0);
+    setErr(false);
     setI(((to % n) + n) % n);
   };
+
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), { threshold: 0.4 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // arquivo próprio: o ativo tenta tocar (mudo) ao entrar na tela; sai da tela → pausa
+  const isFile = v?.kind === 'file';
+  useEffect(() => {
+    const el = videoEl.current;
+    if (!el || !isFile) return;
+    if (inView && !reduce) el.play().catch(() => {});
+    else el.pause();
+  }, [i, inView, isFile, reduce]);
 
   // arquivo local: inicia o selecionado quando o visitante já interagiu (se o navegador permitir)
   useEffect(() => {
     const el = videoEl.current;
-    if (!el || !engaged) return;
+    if (!el || !engaged || isFile) return;
     el.play().catch(() => {
       /* bloqueado pelo navegador: o visitante usa os controles */
     });
-  }, [i, engaged]);
+  }, [i, engaged, isFile]);
 
   if (!n) return null;
 
   return (
     <section className="section audiovisual" id="audiovisual" aria-labelledby="audiovisual-title">
       <div className="section-head">
-        <p className="section-num">(03)</p>
+        <p className="section-num">(04)</p>
         <h2 id="audiovisual-title" className="section-title">
           <MaskLines lines={['Filmagem,', <em key="e">edição & motion</em>]} />
         </h2>
@@ -60,6 +85,7 @@ export function Videos() {
       <Reveal>
         <div
           className="av"
+          ref={box}
           role="region"
           aria-roledescription="carrossel"
           aria-label="Vídeos"
@@ -92,7 +118,26 @@ export function Videos() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: reduce ? 0.15 : 0.45, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    {!engaged ? (
+                    {isFile ? (
+                      err ? (
+                        <p className="cam-error">Não foi possível reproduzir este vídeo. Verifique o arquivo em src/data/videos.ts.</p>
+                      ) : (
+                        <video
+                          ref={videoEl}
+                          src={embedUrl(v)}
+                          poster={asset(v.poster)}
+                          muted={muted}
+                          controls
+                          playsInline
+                          loop
+                          preload="auto"
+                          onTimeUpdate={(e) => setTime(e.currentTarget.currentTime)}
+                          onError={() => setErr(true)}
+                        >
+                          {v.captions && <track kind="captions" src={asset(v.captions)} srcLang="pt" label="Português" default />}
+                        </video>
+                      )
+                    ) : !engaged ? (
                       <button
                         className="cam-poster"
                         onClick={() => {
@@ -106,8 +151,6 @@ export function Videos() {
                           ▶
                         </span>
                       </button>
-                    ) : v.kind === 'file' ? (
-                      <video ref={videoEl} src={embedUrl(v)} poster={asset(v.poster)} controls playsInline preload="metadata" />
                     ) : (
                       <iframe
                         src={embedUrl(v)}
@@ -120,12 +163,16 @@ export function Videos() {
                   </motion.div>
                 </AnimatePresence>
                 <span className="cam-vf" aria-hidden="true" />
+                <span className="cam-fx" aria-hidden="true" />
               </div>
               <span className="cam-perf" aria-hidden="true" />
             </div>
             <div className="cam-bottom" aria-hidden="true">
               <span className="cam-rec">
-                <i /> {engaged ? 'PLAY' : 'STANDBY'}
+                <i /> {engaged || (isFile && inView) ? 'REC' : 'STANDBY'}
+              </span>
+              <span className="cam-tc">
+                {new Date(time * 1000).toISOString().slice(14, 19)}:{String(Math.floor((time % 1) * 24)).padStart(2, '0')}
               </span>
               <span>ISO 400 · 24 FPS</span>
             </div>
@@ -136,13 +183,21 @@ export function Videos() {
             <h3 className="av-title" aria-live="polite">
               {v.title}
             </h3>
+            {v.description && <p className="av-desc">{v.description}</p>}
             <ul className="chips" aria-label="Categorias">
               {v.categories.map((c) => (
                 <li key={c}>{videoCategories[c]}</li>
               ))}
             </ul>
             <div className="av-actions">
-              {!engaged ? (
+              {isFile ? (
+                <button className="btn btn-primary" onClick={() => setMuted((m) => !m)} aria-pressed={!muted}>
+                  <span>{muted ? 'Ativar som' : 'Silenciar'}</span>
+                  <span className="btn-arrow" aria-hidden="true">
+                    {muted ? '🔇' : '🔊'}
+                  </span>
+                </button>
+              ) : !engaged ? (
                 <button
                   className="btn btn-primary"
                   onClick={() => {

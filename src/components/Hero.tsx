@@ -10,6 +10,18 @@ export function Hero() {
   const reduce = useReducedMotion();
   return (
     <section className="hero" id="topo" aria-labelledby="hero-title">
+      <div className="hero-hud" aria-hidden="true">
+        <span className="hud-corner tl" />
+        <span className="hud-corner tr" />
+        <span className="hud-corner bl" />
+        <span className="hud-corner br" />
+        <span className="hud-rec">
+          <i /> REC
+        </span>
+        <span className="hud-tc">{site.brand}</span>
+        <span className="hud-scan" />
+        <span className="hud-focus" />
+      </div>
 
       <div className="hero-meta">
         <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.8 }}>
@@ -24,9 +36,23 @@ export function Hero() {
         <MaskLines
           inView={false}
           delay={0.15}
-          lines={hero.lines.map((l, i) => (i === hero.highlight ? <em key={i}>{l}</em> : <span key={i}>{l}</span>))}
+          lines={hero.title.map((l, i) => (i === hero.highlight ? <em key={i}>{l}</em> : <span key={i}>{l}</span>))}
         />
       </h1>
+
+      <motion.p
+        className="hero-sub"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.8 }}
+      >
+        {hero.subtitle.map((t, i) => (
+          <span key={t}>
+            {i > 0 && <b aria-hidden="true"> • </b>}
+            {t}
+          </span>
+        ))}
+      </motion.p>
 
       <div className="hero-bottom">
         <motion.p
@@ -48,8 +74,8 @@ export function Hero() {
             <span>{hero.ctaPrimary}</span>
             <span className="btn-arrow" aria-hidden="true">↓</span>
           </a>
-          <a href="#sobre" className="link-underline">
-            {hero.ctaSecondary}
+          <a href="#contato" className="btn btn-ghost">
+            <span>{hero.ctaSecondary}</span>
           </a>
         </motion.div>
       </div>

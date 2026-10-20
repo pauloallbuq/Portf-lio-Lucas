@@ -26,6 +26,10 @@ export type Video = {
   url: string;
   poster: string;
   categories: VideoCategory[];
+  /** descrição curta (opcional) */
+  description?: string;
+  /** legenda .vtt em /public (opcional, só para kind 'file') */
+  captions?: string;
 };
 
 export const videos: Video[] = [

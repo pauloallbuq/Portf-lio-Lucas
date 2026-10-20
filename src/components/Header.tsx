@@ -6,9 +6,10 @@ import { setSound, useSound } from '../hooks/useSound';
 
 const links = [
   { id: 'sobre', label: 'Sobre' },
+  { id: 'trajetoria', label: 'Trajetória' },
   { id: 'design', label: 'Design' },
   { id: 'audiovisual', label: 'Audiovisual' },
-  { id: 'trajetoria', label: 'Trajetória' },
+  { id: 'servicos', label: 'Serviços' },
   { id: 'contato', label: 'Contato' },
 ];
 

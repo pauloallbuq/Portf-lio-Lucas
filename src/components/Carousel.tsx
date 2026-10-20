@@ -1,6 +1,17 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { playClick, playOpen } from '../hooks/useSound';
 
-export type Slide = { src: string; alt: string; title?: string; width?: number; height?: number };
+export type Slide = {
+  src: string;
+  alt: string;
+  title?: string;
+  width?: number;
+  height?: number;
+  /** cartão de projeto: nome, categoria e descrição */
+  name?: string;
+  category?: string;
+  description?: string;
+};
 
 type Props = {
   slides: Slide[];
@@ -100,8 +111,21 @@ export function Carousel({ slides, label, variant, autoplay = 0 }: Props) {
     }
   }, [zoom]);
 
+  const open = (i: number) => {
+    playOpen();
+    setZoom(i);
+  };
+  const nav = (i: number) => {
+    playClick();
+    goTo(i);
+  };
+
   const closeZoom = () => dialog.current?.close();
-  const step = (dir: number) => setZoom((z) => (z === null ? z : (z + dir + slides.length) % slides.length));
+  const step = (dir: number) => {
+    playClick();
+    setZoomStep(dir);
+  };
+  const setZoomStep = (dir: number) => setZoom((z) => (z === null ? z : (z + dir + slides.length) % slides.length));
 
   return (
     <div
@@ -124,22 +148,33 @@ export function Carousel({ slides, label, variant, autoplay = 0 }: Props) {
         onKeyDown={(e) => {
           if (e.key === 'ArrowRight') {
             e.preventDefault();
-            goTo(index + 1);
+            nav(index + 1);
           } else if (e.key === 'ArrowLeft') {
             e.preventDefault();
-            goTo(index - 1);
+            nav(index - 1);
           }
         }}
       >
         {slides.map((s, i) => (
-          <li key={s.src} className="carousel-slide" aria-roledescription="slide" aria-label={`${i + 1} de ${slides.length}`}>
-            <button className="carousel-media" onClick={() => setZoom(i)} aria-label={`Ampliar: ${s.title ?? s.alt}`}>
+          <li key={s.src} className={`carousel-slide ${i === index ? 'is-current' : ''}`} aria-roledescription="slide" aria-label={`${i + 1} de ${slides.length}`}>
+            <button className="carousel-media" onClick={() => open(i)} aria-label={`Ampliar: ${s.title ?? s.alt}`}>
               <img src={s.src} alt={s.alt} width={s.width} height={s.height} loading={i < 3 ? 'eager' : 'lazy'} decoding="async" draggable={false} />
               <span className="carousel-zoom" aria-hidden="true">
                 Ampliar ↗
               </span>
             </button>
-            {s.title && (
+            {s.name ? (
+              <div className="work-card">
+                <p className="work-cat">
+                  <span>{String(i + 1).padStart(2, '0')}</span> {s.category}
+                </p>
+                <h3 className="work-name">{s.name}</h3>
+                {s.description && <p className="work-desc">{s.description}</p>}
+                <button className="work-open" onClick={() => open(i)}>
+                  Ver projeto <span aria-hidden="true">↗</span>
+                </button>
+              </div>
+            ) : s.title && (
               <p className="carousel-caption">
                 <span>{String(i + 1).padStart(2, '0')}</span> {s.title}
               </p>
@@ -155,6 +190,11 @@ export function Carousel({ slides, label, variant, autoplay = 0 }: Props) {
         <div className="carousel-progress" aria-hidden="true">
           <span style={{ transform: `scaleX(${(index + 1) / slides.length})` }} />
         </div>
+        <div className="carousel-dots" role="group" aria-label="Ir para o slide">
+          {slides.map((_, k) => (
+            <button key={k} className={k === index ? 'is-active' : ''} aria-label={`Slide ${k + 1}`} aria-current={k === index || undefined} onClick={() => nav(k)} />
+          ))}
+        </div>
         <div className="carousel-arrows">
           {autoplay > 0 && !reduced && (
             <button
@@ -166,10 +206,10 @@ export function Carousel({ slides, label, variant, autoplay = 0 }: Props) {
               {paused ? '▶' : '❚❚'}
             </button>
           )}
-          <button onClick={() => goTo(index - 1)} disabled={index === 0} aria-label="Imagem anterior">
+          <button onClick={() => nav(index - 1)} disabled={index === 0} aria-label="Imagem anterior">
             ←
           </button>
-          <button onClick={() => goTo(index + 1)} disabled={index >= slides.length - 1 || end} aria-label="Próxima imagem">
+          <button onClick={() => nav(index + 1)} disabled={index >= slides.length - 1 || end} aria-label="Próxima imagem">
             →
           </button>
         </div>
@@ -193,6 +233,7 @@ export function Carousel({ slides, label, variant, autoplay = 0 }: Props) {
         {zoom !== null && (
           <>
             <img src={slides[zoom].src} alt={slides[zoom].alt} />
+            {slides[zoom].description && <p className="lightbox-desc">{slides[zoom].description}</p>}
             <div className="lightbox-bar">
               <span>
                 {String(zoom + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}

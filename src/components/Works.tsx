@@ -16,6 +16,9 @@ export function Works() {
           src: asset(w.image),
           alt: `${w.project} — ${w.title}`,
           title: `${w.project}${w.year ? ` · ${w.year}` : ''} — ${w.title}`,
+          name: w.project,
+          category: workCategories.find((c) => c.id === w.categories[0])?.label,
+          description: w.description ?? `${w.title}${w.year ? ` · ${w.year}` : ''}`,
           width: w.width,
           height: w.height,
         }));
@@ -23,12 +26,12 @@ export function Works() {
   return (
     <section className="section projects" id="design" aria-labelledby="design-title">
       <div className="section-head">
-        <p className="section-num">(02)</p>
+        <p className="section-num">(03)</p>
         <h2 id="design-title" className="section-title">
           <MaskLines lines={['Design', <em key="g">gráfico</em>]} />
         </h2>
         <Reveal className="section-aside" delay={0.2}>
-          <p>Materiais gráficos e digitais. O carrossel avança sozinho — arraste, use as setas ou clique para ampliar.</p>
+          <p>Materiais gráficos e digitais. O carrossel avança sozinho e pausa quando você interage — arraste, use as setas ou abra um projeto.</p>
         </Reveal>
       </div>
 

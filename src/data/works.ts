@@ -25,6 +25,8 @@ export type Work = {
   height: number;
   categories: WorkCategory[];
   featured?: boolean;
+  /** descrição curta exibida no cartão e no modal (opcional) */
+  description?: string;
 };
 
 export const works: Work[] = [

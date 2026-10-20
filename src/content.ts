@@ -4,13 +4,14 @@
  */
 
 export const hero = {
-  lines: ['Criatividade,', 'comunicação', '& estratégia.'],
+  title: ['Criatividade que', 'gera resultados.'],
   /** índice da linha destacada em azul */
   highlight: 1,
+  subtitle: ['Marketing Digital', 'Design Gráfico', 'Design para Redes Sociais', 'Video Maker'],
   intro:
-    'Bacharel em Publicidade e Propaganda e pós-graduado em Marketing e Estratégia Digital. Desde 2021 criando materiais publicitários, identidades visuais e conteúdo audiovisual.',
-  ctaPrimary: 'Ver trabalhos',
-  ctaSecondary: 'Conheça minha história',
+    'Transformo ideias em experiências visuais, campanhas estratégicas e conteúdos que conectam marcas e pessoas.',
+  ctaPrimary: 'Explorar portfólio',
+  ctaSecondary: 'Entrar em contato',
 };
 
 export const areas = [
@@ -77,3 +78,22 @@ export const contact = {
   title: ['Vamos criar', 'algo juntos?'],
   text: 'Identidade visual, campanhas, conteúdo para redes sociais, filmagem, edição ou motion. Me conta o que você tem em mente.',
 };
+
+/** SERVIÇOS — `icon`: 'megaphone' | 'pen' | 'social' | 'camera'. Sem promessas de resultado. */
+export const services = [
+  { icon: 'megaphone', title: 'Marketing digital', text: 'Planejamento visual e criação de conteúdos para comunicação digital.' },
+  { icon: 'pen', title: 'Design gráfico', text: 'Peças publicitárias, banners, materiais gráficos e identidade visual.' },
+  { icon: 'social', title: 'Design para redes sociais', text: 'Conteúdos visuais adaptados para cada plataforma social.' },
+  { icon: 'camera', title: 'Video maker', text: 'Filmagem, edição, montagem, tratamento visual e motion design.' },
+] as const;
+
+/**
+ * HABILIDADES E FERRAMENTAS
+ * `items`: competências (vindas das áreas de atuação reais).
+ * `tools`: preencha só com ferramentas confirmadas pelo Lucas — lista vazia mostra "A confirmar".
+ */
+export const skills = [
+  { title: 'Design e composição visual', items: ['Design gráfico', 'Identidade visual e logotipos', 'Materiais publicitários e promocionais'], tools: [] as string[] },
+  { title: 'Marketing digital', items: ['Marketing e comunicação digital', 'Design para redes sociais', 'Campanhas publicitárias'], tools: [] as string[] },
+  { title: 'Edição de vídeo', items: ['Filmagem e edição de vídeos', 'Motion design', 'Produção de conteúdo audiovisual'], tools: [] as string[] },
+];
