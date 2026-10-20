@@ -30,12 +30,16 @@ export type Video = {
   description?: string;
   /** legenda .vtt em /public (opcional, só para kind 'file') */
   captions?: string;
+  /** link da publicação original (botão "Abrir no Instagram") */
+  link?: string;
+  /** trecho curto sem som usado nas películas do topo do site */
+  loop?: string;
 };
 
 export const videos: Video[] = [
-  { id: 'festeja', title: 'Festeja Amarante', service: 'Motion', kind: 'instagram', url: 'https://www.instagram.com/p/DRhQT1AEQf8/', poster: 'videos/festeja-amarante.webp', categories: ['motion', 'eventos', 'promocionais', 'redes'] },
-  { id: 'viva-amar', title: 'Festival Viva Amar', service: 'Motion', kind: 'instagram', url: 'https://www.instagram.com/p/DLnI4xPxny4/', poster: 'videos/viva-amar-motion.webp', categories: ['motion', 'eventos', 'promocionais', 'redes'] },
-  { id: 'aniversario', title: 'Aniversário de Amarante', service: 'Filmagem e edição', kind: 'instagram', url: 'https://www.instagram.com/p/DM7nUO8RI_E/', poster: 'videos/aniversario-amarante.webp', categories: ['filmagem', 'institucionais', 'redes'] },
-  { id: 'dr-jose', title: 'Cirurgião plástico Dr. José Maurício', service: 'Filmagem e edição', kind: 'instagram', url: 'https://www.instagram.com/p/C8PGxnxgEFU/', poster: 'videos/dr-jose-mauricio.webp', categories: ['filmagem', 'redes'] },
-  { id: 'stouradas', title: 'Bloquinho de carnaval Stouradas', service: 'Filmagem e edição', kind: 'instagram', url: 'https://www.instagram.com/p/C8dKjN_vtb7/', poster: 'videos/stouradas.webp', categories: ['filmagem', 'eventos', 'redes'] },
+  { id: 'festeja', title: 'Festeja Amarante', service: 'Motion', kind: 'file', url: 'videos/festeja-amarante.mp4', link: 'https://www.instagram.com/p/DRhQT1AEQf8/', loop: 'videos/loop-festeja-amarante.mp4', poster: 'videos/festeja-amarante.webp', categories: ['motion', 'eventos', 'promocionais', 'redes'] },
+  { id: 'viva-amar', title: 'Festival Viva Amar', service: 'Motion', kind: 'file', url: 'videos/viva-amar-motion.mp4', link: 'https://www.instagram.com/p/DLnI4xPxny4/', loop: 'videos/loop-viva-amar-motion.mp4', poster: 'videos/viva-amar-motion.webp', categories: ['motion', 'eventos', 'promocionais', 'redes'] },
+  { id: 'aniversario', title: 'Aniversário de Amarante', service: 'Filmagem e edição', kind: 'file', url: 'videos/aniversario-amarante.mp4', link: 'https://www.instagram.com/p/DM7nUO8RI_E/', loop: 'videos/loop-aniversario-amarante.mp4', poster: 'videos/aniversario-amarante.webp', categories: ['filmagem', 'institucionais', 'redes'] },
+  { id: 'dr-jose', title: 'Cirurgião plástico Dr. José Maurício', service: 'Filmagem e edição', kind: 'file', url: 'videos/dr-jose-mauricio.mp4', link: 'https://www.instagram.com/p/C8PGxnxgEFU/', loop: 'videos/loop-dr-jose-mauricio.mp4', poster: 'videos/dr-jose-mauricio.webp', categories: ['filmagem', 'redes'] },
+  { id: 'stouradas', title: 'Bloquinho de carnaval Stouradas', service: 'Filmagem e edição', kind: 'file', url: 'videos/stouradas.mp4', link: 'https://www.instagram.com/p/C8dKjN_vtb7/', loop: 'videos/loop-stouradas.mp4', poster: 'videos/stouradas.webp', categories: ['filmagem', 'eventos', 'redes'] },
 ];

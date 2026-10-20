@@ -28,7 +28,7 @@ export const site = {
   /** Preencha com os contatos do Lucas. Campos vazios não aparecem. */
   contact: {
     email: '',
-    whatsapp: '', // só números, com DDI e DDD. Ex.: 5586999999999
+    whatsapp: '558699822647', // só números, com DDI e DDD. Ex.: 5586999999999
     instagram: '', // URL completa do perfil
     linkedin: '', // URL completa do perfil
     behance: '', // URL completa do perfil

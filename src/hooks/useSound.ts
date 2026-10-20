@@ -35,8 +35,8 @@ export function useSound() {
 let ctx: AudioContext | null = null;
 
 /** Som de obturador sintetizado (espelho + cortina). Só toca após clique do visitante e com o som ligado. */
-export function playShutter() {
-  if (!enabled) return;
+export function playShutter(force = false) {
+  if (!enabled && !force) return;
   try {
     const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (!AC) return;
@@ -116,3 +116,42 @@ function tone(freqs: number[], dur: number, gain: number, type: OscillatorType =
 export const playClick = () => tone([1900], 0.018, 0.08);
 /** Som curto de interface (abrir projeto). */
 export const playOpen = () => tone([660, 990], 0.07, 0.06, 'sine');
+
+/** Diafragma abrindo e fechando: lâminas (ruído filtrado em varredura) + obturador. */
+export function playIris(force = false) {
+  if (!enabled && !force) return;
+  try {
+    const AC = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!AC) return;
+    ctx ??= new AC();
+    if (ctx.state === 'suspended') void ctx.resume();
+    const c = ctx;
+    const blades = (at: number, from: number, to: number) => {
+      const dur = 0.28;
+      const len = Math.ceil(c.sampleRate * dur);
+      const buf = c.createBuffer(1, len, c.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (i % 900 < 60 ? 1 : 0.25);
+      const src = c.createBufferSource();
+      src.buffer = buf;
+      const bp = c.createBiquadFilter();
+      bp.type = 'bandpass';
+      bp.Q.value = 4;
+      bp.frequency.setValueAtTime(from, at);
+      bp.frequency.exponentialRampToValueAtTime(to, at + dur);
+      const g = c.createGain();
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.exponentialRampToValueAtTime(0.35, at + 0.04);
+      g.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+      src.connect(bp).connect(g).connect(c.destination);
+      src.start(at);
+      src.stop(at + dur + 0.02);
+    };
+    const t = c.currentTime + 0.01;
+    blades(t, 900, 3500); // fecha
+    playShutter(force);
+    blades(t + 0.45, 3500, 900); // abre
+  } catch {
+    /* áudio indisponível */
+  }
+}

@@ -14,7 +14,11 @@ function embedUrl(v: Video) {
   return asset(v.url);
 }
 
-const sourceLabel = (v: Video) => (v.kind === 'instagram' ? 'Abrir no Instagram' : v.kind === 'youtube' ? 'Abrir no YouTube' : 'Abrir vídeo');
+const linkOf = (v: Video) => v.link ?? v.url;
+const sourceLabel = (v: Video) => {
+  const u = linkOf(v);
+  return u.includes('instagram.com') ? 'Abrir no Instagram' : /youtu/.test(u) ? 'Abrir no YouTube' : 'Abrir vídeo';
+};
 
 /**
  * Carrossel de vídeos em moldura de câmera analógica.
@@ -78,7 +82,7 @@ export function Videos() {
           <MaskLines lines={['Filmagem,', <em key="e">edição & motion</em>]} />
         </h2>
         <Reveal className="section-aside" delay={0.2}>
-          <p>Trabalhos audiovisuais publicados. Selecione um rolo na película e dê play — um vídeo de cada vez.</p>
+          <p>Trabalhos audiovisuais publicados. Os vídeos tocam sozinhos (sem som) — troque pela película ou pelas setas e ative o som quando quiser.</p>
         </Reveal>
       </div>
 
@@ -131,6 +135,8 @@ export function Videos() {
                           playsInline
                           loop
                           preload="auto"
+                          autoPlay
+                          onPlay={playClick}
                           onTimeUpdate={(e) => setTime(e.currentTarget.currentTime)}
                           onError={() => setErr(true)}
                         >
@@ -191,7 +197,7 @@ export function Videos() {
             </ul>
             <div className="av-actions">
               {isFile ? (
-                <button className="btn btn-primary" onClick={() => setMuted((m) => !m)} aria-pressed={!muted}>
+                <button className="btn btn-primary" onClick={() => { playClick(); setMuted((m) => !m); }} aria-pressed={!muted}>
                   <span>{muted ? 'Ativar som' : 'Silenciar'}</span>
                   <span className="btn-arrow" aria-hidden="true">
                     {muted ? '🔇' : '🔊'}
@@ -215,7 +221,7 @@ export function Videos() {
                   Parar e voltar à capa
                 </button>
               )}
-              <a className="link-underline" href={v.url} target="_blank" rel="noopener noreferrer">
+              <a className="link-underline" href={v.kind === 'file' && !v.link ? asset(v.url) : linkOf(v)} target="_blank" rel="noopener noreferrer">
                 {sourceLabel(v)} ↗
               </a>
             </div>

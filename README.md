@@ -78,3 +78,8 @@ Em `skills` (`src/content.ts`), preencha `tools` só com ferramentas confirmadas
 - [ ] Botão "Som on/off" no topo silencia todos os efeitos
 - [ ] Celular: sem rolagem lateral, menu abre e fecha
 - [ ] Contatos preenchidos em `src/config/site.ts`
+
+### Entrada REC e películas do topo
+- A tela com o botão **REC** fica em `src/components/Intro.tsx` (som de obturador + diafragma em `src/hooks/useSound.ts`).
+- As películas laterais do topo usam o campo `loop` de cada vídeo em `src/data/videos.ts` (trecho curto, sem som, `public/videos/loop-*.mp4`).
+- Para gerar um loop novo: `ffmpeg -ss 3 -t 6 -i video.mp4 -vf "scale=-2:360,fps=24" -an -movflags +faststart loop-video.mp4`.

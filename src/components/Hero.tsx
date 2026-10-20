@@ -2,6 +2,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { MaskLines } from './Reveal';
 import { site } from '../config/site';
 import { areas, hero } from '../content';
+import { EditorPanels, HeroReels } from './HeroReels';
 
 const YEAR = new Date().getFullYear();
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -20,8 +21,8 @@ export function Hero() {
         </span>
         <span className="hud-tc">{site.brand}</span>
         <span className="hud-scan" />
-        <span className="hud-focus" />
       </div>
+      <HeroReels />
 
       <div className="hero-meta">
         <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2, duration: 0.8 }}>
@@ -79,6 +80,8 @@ export function Hero() {
           </a>
         </motion.div>
       </div>
+
+      <EditorPanels />
 
       <a href="#sobre" className="scroll-cue" aria-label="Rolar para o conteúdo">
         <span className="scroll-cue-line" />
