@@ -2736,3 +2736,4 @@ a.social:hover .social-arrow {
 @keyframes introBg { 0%, 48% { opacity: 1; } 52%, 100% { opacity: 0; } }
 @media (min-width: 1100px) { .hero > .reel { position: absolute; } }
 @media (min-width: 1100px) { .hero > .reel { top: var(--header-h); } }
+.cam-gate { touch-action: pan-y; }

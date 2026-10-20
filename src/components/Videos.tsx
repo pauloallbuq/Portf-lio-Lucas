@@ -31,7 +31,8 @@ export function Videos() {
   const videoEl = useRef<HTMLVideoElement>(null);
   const box = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
-  const [muted, setMuted] = useState(true); // autoplay só é permitido sem som
+  const [muted, setMuted] = useState(false); // som ligado; se o navegador bloquear, cai para mudo
+  const swipeX = useRef<number | null>(null);
   const [time, setTime] = useState(0);
   const [err, setErr] = useState(false);
   const reduce = useReducedMotion();
@@ -59,7 +60,13 @@ export function Videos() {
   useEffect(() => {
     const el = videoEl.current;
     if (!el || !isFile) return;
-    if (inView && !reduce) el.play().catch(() => {});
+    if (inView && !reduce)
+      el.play().catch(() => {
+        // navegador bloqueou autoplay com som: toca mudo e mantém o botão "Ativar som"
+        el.muted = true;
+        setMuted(true);
+        el.play().catch(() => {});
+      });
     else el.pause();
   }, [i, inView, isFile, reduce]);
 
@@ -82,7 +89,7 @@ export function Videos() {
           <MaskLines lines={['Filmagem,', <em key="e">edição & motion</em>]} />
         </h2>
         <Reveal className="section-aside" delay={0.2}>
-          <p>Trabalhos audiovisuais publicados. Os vídeos tocam sozinhos (sem som) — troque pela película ou pelas setas e ative o som quando quiser.</p>
+          <p>Trabalhos audiovisuais publicados. Os vídeos tocam sozinhos com som — arraste para o lado, use as setas ou a película para trocar.</p>
         </Reveal>
       </div>
 
@@ -112,7 +119,18 @@ export function Videos() {
             </div>
             <div className="cam-body">
               <span className="cam-perf" aria-hidden="true" />
-              <div className="cam-gate">
+              <div
+                className="cam-gate"
+                onPointerDown={(e) => {
+                  swipeX.current = e.clientX;
+                }}
+                onPointerUp={(e) => {
+                  const dx = swipeX.current === null ? 0 : e.clientX - swipeX.current;
+                  swipeX.current = null;
+                  if (Math.abs(dx) > 50) go(dx < 0 ? i + 1 : i - 1);
+                }}
+                onPointerCancel={() => (swipeX.current = null)}
+              >
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
                     key={v.id + String(engaged)}
